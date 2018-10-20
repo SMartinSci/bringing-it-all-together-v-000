@@ -20,33 +20,9 @@ end
     DB[:conn].execute(sql)
   end
 
-  def self.create(name:, breed:)
-     dog = Dog.new(name: name, breed: breed)
-     dog.save
-     dog
-   end
-
-   def self.find_or_create_by(name:, breed:)
-    song = DB[:conn].execute("SELECT * FROM dogs WHERE name = '#{name}' AND breed = '#{breed}'")
-    if !song.empty?
-      dog_data = song[0]
-      dog = Dog.new(dog_data[0], dog_data[1], dog_data[2])
-    else
-      dog = self.create(name: name, breed: breed)
-    end
-    dog
-  end
-
   def self.drop_table
     sql = "DROP TABLE IF EXISTS dogs"
     DB[:conn].execute(sql)
-  end
-
-  def self.new_from_db(row)
-      id = row[0]
-      name =  row[1]
-      grade = row[2]
-      self.new(id: id, name: name, breed: breed)
   end
 
   def save
@@ -62,6 +38,30 @@ end
       @id = DB[:conn].execute("SELECT last_insert_rowid() FROM dogs")[0][0]
     end
     self
+  end
+
+  def self.create(name:, breed:)
+     dog = Dog.new(name: name, breed: breed)
+     dog.save
+     dog
+   end
+
+  def self.find_or_create_by(name:, breed:)
+   song = DB[:conn].execute("SELECT * FROM dogs WHERE name = '#{name}' AND breed = '#{breed}'")
+   if !song.empty?
+     dog_data = song[0]
+     dog = Dog.new(dog_data[0], dog_data[1], dog_data[2])
+   else
+     dog = self.create(name: name, breed: breed)
+   end
+   dog
+ end
+
+  def self.new_from_db(row)
+      id = row[0]
+      name =  row[1]
+      grade = row[2]
+      self.new(id: id, name: name, breed: breed)
   end
 
   def self.find_by_name(name)
