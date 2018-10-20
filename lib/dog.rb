@@ -20,7 +20,13 @@ def self.create_table
     DB[:conn].execute(sql)
   end
 
-def self.find_or_create_by(name:, breed:)
+  def self.create(name:, breed:)
+     dog = Dog.new(name: name, breed: breed)
+     dog.save
+     dog
+   end
+
+   def self.find_or_create_by(name:, breed:)
     song = DB[:conn].execute("SELECT * FROM dogs WHERE name = ? AND breed = ?", name, breed)
     if !song.empty?
       dog_data = song[0]
