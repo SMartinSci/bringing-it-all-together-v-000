@@ -43,16 +43,15 @@ def self.find_or_create_by(name:, breed:)
     DB[:conn].execute(sql, self.name, self.breed, self.id)
   end
 
-
   def save
-    if self.id 
+    if self.id
       self.update
     else
       sql = <<-SQL
-        INSERT INTO dogs (name, breed) 
+        INSERT INTO dogs (name, breed)
         VALUES (?, ?)
       SQL
- 
+
       DB[:conn].execute(sql, self.name, self.breed)
       @id = DB[:conn].execute("SELECT last_insert_rowid() FROM dogs")[0][0]
     end
